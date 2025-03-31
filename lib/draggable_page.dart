@@ -76,8 +76,8 @@ class _DraggablePageState extends State<DraggablePage> {
                           isVisibleChildWhenDragging = true;
                         },
                         onExit: (PointerExitEvent pinter) {
+                          widget.moveButtonsCubit.deletePaddings();
                           isVisibleChildWhenDragging = false;
-                          // draggedCubeIndex = -1;
                         },
                         child: Padding(
                             padding: const EdgeInsets.all(0),
@@ -102,10 +102,7 @@ class _DraggablePageState extends State<DraggablePage> {
                                         });
                                       },
                                       onDragUpdate: (dragUpdateDetails) {
-
                                         widget.moveButtonsCubit.moveBlocks(widgetKey, dragUpdateDetails.globalPosition, buttonsList.length, index);
-
-
 
                                         //TODO с помощью дельты сделать чтобы кубик не исчезал с первым движением
                                         //print("dragUpdateDetails ${dragUpdateDetails}");
