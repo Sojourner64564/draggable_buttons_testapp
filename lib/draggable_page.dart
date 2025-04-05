@@ -21,18 +21,11 @@ class _DraggablePageState extends State<DraggablePage> {
   int invisibleItem = -1;
 
   List<Widget> buttonsList = [
-    const ButtonWidget(color: Colors.deepOrange),
-    const ButtonWidget(color: Colors.lightGreen),
-    const ButtonWidget(color: Colors.deepPurple),
-    const ButtonWidget(color: Colors.blueAccent),
+    const ButtonWidget(color: Colors.teal, assetLink: 'assets/img_icons/command_icon.png',),
+    const ButtonWidget(color: Colors.lightGreen, assetLink: 'assets/img_icons/computer_first_icon.png',),
+    const ButtonWidget(color: Colors.indigo, assetLink: 'assets/img_icons/computer_second_icon.png',),
+    const ButtonWidget(color: Colors.yellow, assetLink: 'assets/img_icons/power_plug_icon.png',),
   ];
-  List<Widget> emptyButtonsSpaceList = [
-    const EmptyButtonSpaceWidget(),
-    const EmptyButtonSpaceWidget(),
-    const EmptyButtonSpaceWidget(),
-    const EmptyButtonSpaceWidget(),
-  ];
-
 
   int draggedCubeIndex = -1;
 
@@ -46,22 +39,26 @@ class _DraggablePageState extends State<DraggablePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                color: Colors.grey,
-                height: 50,
-                child: Stack(
-                  children: [
-                    SizedBox(
-                      key: widgetKey,
-                      child: MouseRegion(
-                        onEnter: (PointerEnterEvent pointer) {
-                          isVisibleChildWhenDragging = true;
-                        },
-                        onExit: (PointerExitEvent pinter) {
-                          widget.moveButtonsCubit.deletePaddings();
-                          isVisibleChildWhenDragging = false;
-                        },
-                        child: Padding(
-                            padding: const EdgeInsets.all(0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: SizedBox(
+                    height: 50,
+                    child: Stack(
+                      children: [
+                        SizedBox(
+                          key: widgetKey,
+                          child: MouseRegion(
+                            onEnter: (PointerEnterEvent pointer) {
+                              isVisibleChildWhenDragging = true;
+                            },
+                            onExit: (PointerExitEvent pinter) {
+                              widget.moveButtonsCubit.deletePaddings();
+                              isVisibleChildWhenDragging = false;
+                            },
                             child: Row(
                                 children: List.generate(
                                   buttonsList.length,
@@ -101,7 +98,7 @@ class _DraggablePageState extends State<DraggablePage> {
                                       ),
                                       child: DragTarget<int>(
                                         builder: (BuildContext context, List<dynamic> accepted, List<dynamic> rejected) {
-                                          return emptyButtonsSpaceList[index];
+                                          return const EmptyButtonSpaceWidget();
                                         },
                                         onMove: (DragTargetDetails<int> details) {
                                           draggedCubeIndex = index;
@@ -118,38 +115,36 @@ class _DraggablePageState extends State<DraggablePage> {
                                   },
                                 ),
                               ),
-                        ),
-                      ),
-                    ),
-                    IgnorePointer(
-                      child: Padding(
-                        padding: const EdgeInsets.all(0),
-                        child: SizedBox(
-                          height: 50,
-                          child: BlocBuilder<MoveButtonsCubit, MoveButtonsCubitState>(
-                            bloc: widget.moveButtonsCubit,
-                            builder: (context, state) {
-                              return Row(
-                                children: List.generate(
-                                  buttonsList.length,
-                                      (index) {
-                                    return Visibility(
-                                      visible: !(invisibleItem == index),
-                                      child: AnimatedPadding(
-                                        padding: index==state.index ? EdgeInsets.only(left: state.leftPadding, right: state.rightPadding) : EdgeInsets.zero,
-                                        duration: const Duration(milliseconds: 100),
-                                        child: buttonsList[index],
-                                      ),
-                                    );
-                                  },
-                                ),
-                              );
-                            },
                           ),
                         ),
-                      ),
+                        IgnorePointer(
+                          child: SizedBox(
+                            height: 50,
+                            child: BlocBuilder<MoveButtonsCubit, MoveButtonsCubitState>(
+                              bloc: widget.moveButtonsCubit,
+                              builder: (context, state) {
+                                return Row(
+                                  children: List.generate(
+                                    buttonsList.length,
+                                        (index) {
+                                      return Visibility(
+                                        visible: !(invisibleItem == index),
+                                        child: AnimatedPadding(
+                                          padding: index==state.index ? EdgeInsets.only(left: state.leftPadding, right: state.rightPadding) : EdgeInsets.zero,
+                                          duration: const Duration(milliseconds: 100),
+                                          child: buttonsList[index],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ],
