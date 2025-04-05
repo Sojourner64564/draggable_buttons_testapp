@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 
 class EmptyButtonSpaceWidget extends StatelessWidget {
-  const EmptyButtonSpaceWidget({super.key});
+  const EmptyButtonSpaceWidget({super.key, required this.widgetWidth});
+  final double widgetWidth;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: Container(
-        width: 50,
-        height: 50,
-        color: Colors.transparent,
-      ),
-    );  }
+    return Container(
+      width: widgetWidth,
+      height: 50,
+      color: Colors.transparent,
+    );
+  }
 }
