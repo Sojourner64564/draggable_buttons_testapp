@@ -47,12 +47,10 @@ class _DraggablePageState extends State<DraggablePage> {
             children: [
               Container(
                 color: Colors.grey,
-                //width: 350,
                 height: 50,
                 child: Stack(
                   children: [
-                    Container(
-                      color: Colors.yellow,
+                    SizedBox(
                       key: widgetKey,
                       child: MouseRegion(
                         onEnter: (PointerEnterEvent pointer) {
