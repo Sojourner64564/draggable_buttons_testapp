@@ -4,11 +4,13 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'widget/empty_button_space_widget.dart';
+
 class DraggablePage extends StatefulWidget {
   DraggablePage({super.key});
 
   final MoveButtonsCubit moveButtonsCubit = MoveButtonsCubit();
-
+  final double buttonsWidth = 80;
   @override
   State<DraggablePage> createState() => _DraggablePageState();
 }
@@ -24,6 +26,13 @@ class _DraggablePageState extends State<DraggablePage> {
     const ButtonWidget(color: Colors.deepPurple),
     const ButtonWidget(color: Colors.blueAccent),
   ];
+  List<Widget> emptyButtonsSpaceList = [
+    const EmptyButtonSpaceWidget(),
+    const EmptyButtonSpaceWidget(),
+    const EmptyButtonSpaceWidget(),
+    const EmptyButtonSpaceWidget(),
+  ];
+
 
   int draggedCubeIndex = -1;
 
@@ -39,35 +48,9 @@ class _DraggablePageState extends State<DraggablePage> {
               Container(
                 color: Colors.grey,
                 //width: 350,
-                height: 100,
-                child: Column(
+                height: 50,
+                child: Stack(
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.all(0),
-                      child: SizedBox(
-                        height: 50,
-                        child: BlocBuilder<MoveButtonsCubit, MoveButtonsCubitState>(
-                          bloc: widget.moveButtonsCubit,
-                          builder: (context, state) {
-                            return Row(
-                              children: List.generate(
-                                buttonsList.length,
-                                (index) {
-                                  return Visibility(
-                                    visible: !(invisibleItem == index),
-                                    child: AnimatedPadding(
-                                      padding: index==state.index ? EdgeInsets.only(left: state.leftPadding, right: state.rightPadding) : EdgeInsets.zero,
-                                      duration: const Duration(milliseconds: 100),
-                                      child: buttonsList[index],
-                                    ),
-                                  );
-                                },
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
                     Container(
                       color: Colors.yellow,
                       key: widgetKey,
@@ -120,7 +103,7 @@ class _DraggablePageState extends State<DraggablePage> {
                                       ),
                                       child: DragTarget<int>(
                                         builder: (BuildContext context, List<dynamic> accepted, List<dynamic> rejected) {
-                                          return buttonsList[index];
+                                          return emptyButtonsSpaceList[index];
                                         },
                                         onMove: (DragTargetDetails<int> details) {
                                           draggedCubeIndex = index;
@@ -137,6 +120,34 @@ class _DraggablePageState extends State<DraggablePage> {
                                   },
                                 ),
                               ),
+                        ),
+                      ),
+                    ),
+                    IgnorePointer(
+                      child: Padding(
+                        padding: const EdgeInsets.all(0),
+                        child: SizedBox(
+                          height: 50,
+                          child: BlocBuilder<MoveButtonsCubit, MoveButtonsCubitState>(
+                            bloc: widget.moveButtonsCubit,
+                            builder: (context, state) {
+                              return Row(
+                                children: List.generate(
+                                  buttonsList.length,
+                                      (index) {
+                                    return Visibility(
+                                      visible: !(invisibleItem == index),
+                                      child: AnimatedPadding(
+                                        padding: index==state.index ? EdgeInsets.only(left: state.leftPadding, right: state.rightPadding) : EdgeInsets.zero,
+                                        duration: const Duration(milliseconds: 100),
+                                        child: buttonsList[index],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       ),
                     ),
