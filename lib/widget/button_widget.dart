@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 
 class ButtonWidget extends StatelessWidget {
-  const ButtonWidget({super.key, required this.color, required this.assetLink});
-
+  const ButtonWidget({
+    super.key,
+    required this.color,
+    required this.assetLink,
+    this.onTap,
+  });
+  final void Function()? onTap;
   final Color color;
   final String assetLink;
-
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +19,7 @@ class ButtonWidget extends StatelessWidget {
         //behavior: HitTestBehavior.translucent,
         onTap: () {
           print('Виджет получил жест (координаты: )');
+          onTap?.call();
         },
         child: Container(
           width: 50,
