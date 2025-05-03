@@ -3,21 +3,32 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'widget/empty_button_space_widget.dart';
 
 class DraggablePage extends StatefulWidget {
-  DraggablePage({super.key, required this.menuWidgetList, required this.animationDuration});
+  DraggablePage({
+    super.key,
+    required this.menuWidgetList,
+    required this.animationDuration,
+    required this.buttonsWidth,
+    required this.widgetHeight,
+    required this.backgroundColor,
+  });
 
   final MoveButtonsCubit moveButtonsCubit = MoveButtonsCubit();
-  final double buttonsWidth = 80;
+  final double buttonsWidth;
+  /// List не const
+  /// Иначе работать не будет
   final List<Widget> menuWidgetList;
   final int animationDuration;
+  final double widgetHeight;
+  final Color backgroundColor;
 
   @override
   State<DraggablePage> createState() => _DraggablePageState();
 }
 
 class _DraggablePageState extends State<DraggablePage> {
+  // ГлобалКей чтобы взять координаты левого верхнего угла виджета
   final GlobalKey widgetKey = GlobalKey();
   bool _isVisibleChildWhenDragging = true;
   int _invisibleItem = -1;
@@ -33,22 +44,22 @@ class _DraggablePageState extends State<DraggablePage> {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: widget.backgroundColor,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(10),
                   child: SizedBox(
-                    height: 50,
+                    height: widget.widgetHeight,
                     child: Stack(
                       children: [
                         SizedBox(
                           key: widgetKey,
                           child: MouseRegion(
-                            onEnter: (PointerEnterEvent pointer) {
+                            onEnter: (_) {
                               _isVisibleChildWhenDragging = true;
                             },
-                            onExit: (PointerExitEvent pinter) {
+                            onExit: (_) {
                               widget.moveButtonsCubit.deletePaddings();
                               _isVisibleChildWhenDragging = false;
                             },
@@ -87,15 +98,18 @@ class _DraggablePageState extends State<DraggablePage> {
                                       },
                                       childWhenDragging: Visibility(
                                         visible: _isVisibleChildWhenDragging,
-                                        child: const SizedBox(
-                                          width: 80,
-                                          height: 50,
+                                        child: SizedBox(
+                                          width: widget.buttonsWidth,
+                                          height: widget.widgetHeight,
                                         ),
                                       ),
                                       child: DragTarget<int>(
                                         builder: (BuildContext context, List<dynamic> accepted, List<dynamic> rejected) {
-                                          return EmptyButtonSpaceWidget(
-                                            widgetWidth: widget.buttonsWidth,
+                                          // Обязательно нужен контейнер иначе не работает
+                                          return Container(
+                                            width: widget.buttonsWidth,
+                                            height: widget.widgetHeight,
+                                            color: Colors.transparent,
                                           );
                                         },
                                         onAcceptWithDetails: (DragTargetDetails<int> details) {
@@ -115,7 +129,7 @@ class _DraggablePageState extends State<DraggablePage> {
                         ),
                         IgnorePointer(
                           child: SizedBox(
-                            height: 50,
+                            height: widget.widgetHeight,
                             child: BlocBuilder<MoveButtonsCubit, MoveButtonsCubitState>(
                               bloc: widget.moveButtonsCubit,
                               builder: (context, state) {

@@ -6,20 +6,27 @@ class ButtonWidget extends StatelessWidget {
   final Color color;
   final String assetLink;
 
+
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: Container(
-        width: 50,
-        height: 50,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-          color: color,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Image.asset(assetLink),
+      child: GestureDetector(
+        //behavior: HitTestBehavior.translucent,
+        onTap: () {
+          print('Виджет получил жест (координаты: )');
+        },
+        child: Container(
+          width: 50,
+          height: 50,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            color: color,
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Image.asset(assetLink),
+          ),
         ),
       ),
     );
