@@ -95,6 +95,7 @@ class _DraggablePageState extends State<DraggablePage> {
                                       _invisibleItem = index;
 
                                       ///TODO как-то оптимизировать этот момент
+                                      ///TODO через дебаунсер !
                                       setState(() {});
                                       print('onDragUpdate');
                                     },
