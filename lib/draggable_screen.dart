@@ -10,11 +10,36 @@ class DraggableScreen extends StatelessWidget {
     return Scaffold(
       body: DraggablePage(
         // ignore: prefer_const_literals_to_create_immutables
-        menuWidgetList: [//TODO навесить onTap
-          const ButtonWidget(color: Colors.teal, assetLink: 'assets/img_icons/command_icon.png',),
-          const ButtonWidget(color: Colors.lightGreen, assetLink: 'assets/img_icons/computer_first_icon.png',),
-          const ButtonWidget(color: Colors.indigo, assetLink: 'assets/img_icons/computer_second_icon.png',),
-          const ButtonWidget(color: Colors.yellow, assetLink: 'assets/img_icons/power_plug_icon.png',),
+        menuWidgetList: [
+          //TODO навесить onTap
+          ButtonWidget(
+            color: Colors.teal,
+            assetLink: 'assets/img_icons/command_icon.png',
+            onTap: () {
+              print("0");
+            },
+          ),
+          ButtonWidget(
+            color: Colors.lightGreen,
+            assetLink: 'assets/img_icons/computer_first_icon.png',
+            onTap: () {
+              print("0");
+            },
+          ),
+          ButtonWidget(
+            color: Colors.indigo,
+            assetLink: 'assets/img_icons/computer_second_icon.png',
+            onTap: () {
+              print("0");
+            },
+          ),
+          ButtonWidget(
+            color: Colors.yellow,
+            assetLink: 'assets/img_icons/power_plug_icon.png',
+            onTap: () {
+              print("0");
+            },
+          ),
         ],
         animationDuration: 200,
         buttonsWidth: 80,

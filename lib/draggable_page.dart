@@ -1,8 +1,7 @@
 import 'package:draggable_buttons_testapp/controller/move_buttons_cubit.dart';
-import 'package:flutter/gestures.dart';
+import 'package:draggable_buttons_testapp/widget/button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 
 class DraggablePage extends StatefulWidget {
   DraggablePage({
@@ -16,9 +15,10 @@ class DraggablePage extends StatefulWidget {
 
   final MoveButtonsCubit moveButtonsCubit = MoveButtonsCubit();
   final double buttonsWidth;
+
   /// List не const
   /// Иначе работать не будет
-  final List<Widget> menuWidgetList;
+  final List<ButtonWidget> menuWidgetList;
   final int animationDuration;
   final double widgetHeight;
   final Color backgroundColor;
@@ -56,75 +56,80 @@ class _DraggablePageState extends State<DraggablePage> {
                         SizedBox(
                           key: widgetKey,
                           child: MouseRegion(
-                            onEnter: (_) {
+                            onEnter: (event) {
                               _isVisibleChildWhenDragging = true;
                             },
-                            onExit: (_) {
+                            onExit: (event) {
                               widget.moveButtonsCubit.deletePaddings();
                               _isVisibleChildWhenDragging = false;
                             },
                             child: Row(
-                                children: List.generate(
-                                  widget.menuWidgetList.length,
-                                  (index) {
-                                    return Draggable(
-                                      data: index,
-                                      feedback: widget.menuWidgetList[index],
-                                      onDraggableCanceled: (Velocity velocity, Offset offset) {
-                                        if (!context.mounted) return;
-                                        widget.moveButtonsCubit.deletePaddings();
-                                        setState(() {
-                                          _invisibleItem = -1;
-                                        });
-                                        print('onDraggableCanceled');
-                                      },
-                                      onDragCompleted: () {
-                                        if (!context.mounted) return;
-                                        widget.moveButtonsCubit.deletePaddings();
-                                        setState(() {
-                                          _invisibleItem = -1;
-                                        });
-                                        print('onDragCompleted');
+                              children: List.generate(
+                                widget.menuWidgetList.length,
+                                (index) {
+                                  return LongPressDraggable(
+                                    data: index,
+                                    delay: const Duration(milliseconds: 150),
+                                    feedback: widget.menuWidgetList[index],
+                                    onDraggableCanceled: (Velocity velocity, Offset offset) {
+                                      if (!context.mounted) return;
+                                      widget.moveButtonsCubit.deletePaddings();
+                                      setState(() {
+                                        _invisibleItem = -1;
+                                      });
+                                      print('onDraggableCanceled');
+                                    },
+                                    onDragCompleted: () {
+                                      if (!context.mounted) return;
+                                      widget.moveButtonsCubit.deletePaddings();
+                                      setState(() {
+                                        _invisibleItem = -1;
+                                      });
+                                      print('onDragCompleted');
+                                    },
+                                    onDragUpdate: (dragUpdateDetails) {
+                                      widget.moveButtonsCubit.moveBlocks(widgetKey, dragUpdateDetails.globalPosition,
+                                          widget.menuWidgetList.length, index);
 
-                                      },
-                                      onDragUpdate: (dragUpdateDetails) {
-                                        widget.moveButtonsCubit.moveBlocks(widgetKey, dragUpdateDetails.globalPosition, widget.menuWidgetList.length, index);
+                                      //TODO с помощью дельты сделать чтобы кубик не исчезал с первым движением
+                                      _invisibleItem = index;
 
-                                        //TODO с помощью дельты сделать чтобы кубик не исчезал с первым движением
-                                        _invisibleItem = index;
-                                        ///TODO как-то оптимизировать этот момент
-                                        setState(() {});
-                                        print('onDragUpdate');
-                                      },
-                                      childWhenDragging: Visibility(
-                                        visible: _isVisibleChildWhenDragging,
-                                        child: SizedBox(
-                                          width: widget.buttonsWidth,
-                                          height: widget.widgetHeight,
-                                        ),
+                                      ///TODO как-то оптимизировать этот момент
+                                      setState(() {});
+                                      print('onDragUpdate');
+                                    },
+                                    childWhenDragging: Visibility(
+                                      visible: _isVisibleChildWhenDragging,
+                                      child: SizedBox(
+                                        width: widget.buttonsWidth,
+                                        height: widget.widgetHeight,
                                       ),
-                                      child: DragTarget<int>(
-                                        builder: (BuildContext context, List<dynamic> accepted, List<dynamic> rejected) {
-                                          // Обязательно нужен контейнер иначе не работает
-                                          return Container(
+                                    ),
+                                    child: DragTarget<int>(
+                                      builder: (_, __, ___) {
+                                        // Обязательно нужен контейнер иначе не работает
+                                        return GestureDetector(
+                                          onTap: () => widget.menuWidgetList[index].onTap(),
+                                          child: Container(
                                             width: widget.buttonsWidth,
                                             height: widget.widgetHeight,
                                             color: Colors.transparent,
-                                          );
-                                        },
-                                        onAcceptWithDetails: (DragTargetDetails<int> details) {
-                                          setState(() {
-                                            final buttonWidget = widget.menuWidgetList[index];
-                                            widget.menuWidgetList[index] = widget.menuWidgetList[details.data];
-                                            widget.menuWidgetList[details.data] = buttonWidget;
-                                          });
-                                          print('onAcceptWithDetails');
-                                        },
-                                      ),
-                                    );
-                                  },
-                                ),
+                                          ),
+                                        );
+                                      },
+                                      onAcceptWithDetails: (DragTargetDetails<int> details) {
+                                        setState(() {
+                                          final buttonWidget = widget.menuWidgetList[index];
+                                          widget.menuWidgetList[index] = widget.menuWidgetList[details.data];
+                                          widget.menuWidgetList[details.data] = buttonWidget;
+                                        });
+                                        print('onAcceptWithDetails');
+                                      },
+                                    ),
+                                  );
+                                },
                               ),
+                            ),
                           ),
                         ),
                         IgnorePointer(
@@ -136,11 +141,13 @@ class _DraggablePageState extends State<DraggablePage> {
                                 return Row(
                                   children: List.generate(
                                     widget.menuWidgetList.length,
-                                        (index) {
+                                    (index) {
                                       return Visibility(
                                         visible: !(_invisibleItem == index),
                                         child: AnimatedPadding(
-                                          padding: index==state.index ? EdgeInsets.only(left: state.leftPadding, right: state.rightPadding) : EdgeInsets.zero,
+                                          padding: index == state.index
+                                              ? EdgeInsets.only(left: state.leftPadding, right: state.rightPadding)
+                                              : EdgeInsets.zero,
                                           duration: Duration(milliseconds: widget.animationDuration),
                                           child: widget.menuWidgetList[index],
                                         ),

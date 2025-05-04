@@ -1,32 +1,31 @@
 import 'package:flutter/material.dart';
 
 class ButtonWidget extends StatelessWidget {
-  const ButtonWidget({super.key, required this.color, required this.assetLink});
+  const ButtonWidget({
+    super.key,
+    required this.color,
+    required this.assetLink,
+    required this.onTap,
+  });
 
   final Color color;
   final String assetLink;
-
+  final void Function() onTap;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
-      child: GestureDetector(
-        //behavior: HitTestBehavior.translucent,
-        onTap: () {
-          print('Виджет получил жест (координаты: )');
-        },
-        child: Container(
-          width: 50,
-          height: 50,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            color: color,
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Image.asset(assetLink),
-          ),
+      child: Container(
+        width: 50,
+        height: 50,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12),
+          color: color,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Image.asset(assetLink),
         ),
       ),
     );
