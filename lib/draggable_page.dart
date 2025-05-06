@@ -11,11 +11,14 @@ class DraggablePage extends StatefulWidget {
     required this.buttonsWidth,
     required this.widgetHeight,
     required this.backgroundColor,
+    required this.buttonsHeight,
+    required this.buttonHorizontalPadding,
   });
 
   final MoveButtonsCubit moveButtonsCubit = MoveButtonsCubit();
   final double buttonsWidth;
-
+  final double buttonsHeight;
+  final double buttonHorizontalPadding;
   /// List не const
   /// Иначе работать не будет
   final List<ButtonWidget> menuWidgetList;
@@ -67,9 +70,8 @@ class _DraggablePageState extends State<DraggablePage> {
                               children: List.generate(
                                 widget.menuWidgetList.length,
                                 (index) {
-                                  return LongPressDraggable(
+                                  return Draggable(
                                     data: index,
-                                    delay: const Duration(milliseconds: 150),
                                     feedback: widget.menuWidgetList[index],
                                     onDraggableCanceled: (Velocity velocity, Offset offset) {
                                       if (!context.mounted) return;
@@ -88,8 +90,7 @@ class _DraggablePageState extends State<DraggablePage> {
                                       print('onDragCompleted');
                                     },
                                     onDragUpdate: (dragUpdateDetails) {
-                                      widget.moveButtonsCubit.moveBlocks(widgetKey, dragUpdateDetails.globalPosition,
-                                          widget.menuWidgetList.length, index);
+                                      widget.moveButtonsCubit.moveBlocks(widgetKey, dragUpdateDetails.globalPosition, widget.menuWidgetList.length, index);
 
                                       //TODO с помощью дельты сделать чтобы кубик не исчезал с первым движением
                                       _invisibleItem = index;
@@ -101,9 +102,12 @@ class _DraggablePageState extends State<DraggablePage> {
                                     },
                                     childWhenDragging: Visibility(
                                       visible: _isVisibleChildWhenDragging,
-                                      child: SizedBox(
-                                        width: widget.buttonsWidth,
-                                        height: widget.widgetHeight,
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: widget.buttonHorizontalPadding),
+                                        child: SizedBox(
+                                          width: widget.buttonsWidth,
+                                          height: widget.buttonsHeight,
+                                        ),
                                       ),
                                     ),
                                     child: DragTarget<int>(
@@ -111,10 +115,13 @@ class _DraggablePageState extends State<DraggablePage> {
                                         // Обязательно нужен контейнер иначе не работает
                                         return GestureDetector(
                                           onTap: () => widget.menuWidgetList[index].onTap(),
-                                          child: Container(
-                                            width: widget.buttonsWidth,
-                                            height: widget.widgetHeight,
-                                            color: Colors.transparent,
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(horizontal: widget.buttonHorizontalPadding),
+                                            child: Container(
+                                              width: widget.buttonsWidth,
+                                              height: widget.widgetHeight,
+                                              color: Colors.transparent,
+                                            ),
                                           ),
                                         );
                                       },

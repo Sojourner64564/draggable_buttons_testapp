@@ -23,27 +23,29 @@ class DraggableScreen extends StatelessWidget {
             color: Colors.lightGreen,
             assetLink: 'assets/img_icons/computer_first_icon.png',
             onTap: () {
-              print("0");
+              print("1");
             },
           ),
           ButtonWidget(
             color: Colors.indigo,
             assetLink: 'assets/img_icons/computer_second_icon.png',
             onTap: () {
-              print("0");
+              print("2");
             },
           ),
           ButtonWidget(
             color: Colors.yellow,
             assetLink: 'assets/img_icons/power_plug_icon.png',
             onTap: () {
-              print("0");
+              print("3");
             },
           ),
         ],
         animationDuration: 200,
-        buttonsWidth: 80,
+        buttonsWidth: 50,
         widgetHeight: 50,
+        buttonsHeight: 50,
+        buttonHorizontalPadding: 15,
         backgroundColor: Colors.white,
       ),
     );
